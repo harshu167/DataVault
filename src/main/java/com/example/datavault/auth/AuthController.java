@@ -58,6 +58,9 @@ public class AuthController {
         String email = request.getEmail().trim().toLowerCase();
 
         User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null && !email.contains("@")) {
+            user = userRepository.findByEmail(email + "@gmail.com").orElse(null);
+        }
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             auditService.log(email, "ANONYMOUS", email, "LOGIN_FAILED", "AUTH", null, "Login", "FAILURE", "Invalid email or password");

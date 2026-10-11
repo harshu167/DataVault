@@ -223,12 +223,12 @@ const AuthView = () => {
             )}
 
             <div className="dv-form-group">
-              <label className="dv-label" htmlFor="email">Email Address</label>
+              <label className="dv-label" htmlFor="email">Email Address / User ID</label>
               <input
                 id="email"
-                type="email"
+                type="text"
                 required
-                placeholder="you@domain.com"
+                placeholder="Email address or user ID"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="dv-input"
