@@ -241,7 +241,47 @@ A safe template is provided in [`.env.example`](.env.example):
 
 ---
 
-## 12. Testing & Verification
+## 12. Production Deployment
+
+### Architecture Overview
+- **Frontend Hosting:** Vercel (React 19 + Vite 8 SPA)
+- **Backend Hosting:** Railway (Spring Boot 4.1.1 Java 17 containerized runtime)
+- **Database:** Aiven MySQL (Managed cloud MySQL with TLS/SSL encryption)
+- **Source Control:** GitHub monorepo (`https://github.com/harshu167/DataVault`)
+
+### 1. Database Setup (Aiven MySQL)
+- Connect using Aiven's TLS/SSL required endpoint:
+  ```
+  SPRING_DATASOURCE_URL=jdbc:mysql://<AIVEN_HOST>:<AIVEN_PORT>/defaultdb?sslMode=REQUIRED
+  SPRING_DATASOURCE_USERNAME=avnadmin
+  SPRING_DATASOURCE_PASSWORD=<AIVEN_PASSWORD>
+  ```
+- Schema tables are automatically managed and migrated via Hibernate (`spring.jpa.hibernate.ddl-auto=update`).
+
+### 2. Backend Deployment (Railway)
+1. Link repository to Railway or deploy using Dockerfile.
+2. Root directory: `/` (repository root).
+3. Set production environment variables in Railway:
+   - `SPRING_DATASOURCE_URL`: `jdbc:mysql://<AIVEN_HOST>:<AIVEN_PORT>/defaultdb?sslMode=REQUIRED`
+   - `SPRING_DATASOURCE_USERNAME`: `avnadmin`
+   - `SPRING_DATASOURCE_PASSWORD`: `<AIVEN_PASSWORD>`
+   - `JWT_SECRET`: `<MINIMUM_256_BIT_SECRET>`
+   - `DATAVAULT_ENCRYPTION_KEY`: `<32_BYTE_KEY>`
+   - `FRONTEND_URL`: `https://<YOUR_VERCEL_APP>.vercel.app`
+4. Generate a public domain under service networking settings.
+5. Verify health check at `https://<YOUR_RAILWAY_APP>.up.railway.app/health`.
+
+### 3. Frontend Deployment (Vercel)
+1. Import repository on Vercel.
+2. Set **Root Directory** to `frontend`.
+3. Framework Preset: **Vite**.
+4. Set production environment variable:
+   - `VITE_API_BASE_URL`: `https://<YOUR_RAILWAY_APP>.up.railway.app`
+5. Deploy and verify seamless frontend-to-backend communication.
+
+---
+
+## 13. Testing & Verification
 
 ### 1. Role-Based Verification Test Suite
 DataVault includes an automated role verification suite in [`scratch/test_roles.js`](scratch/test_roles.js) that validates:
@@ -270,7 +310,7 @@ npm run build
 
 ---
 
-## 13. Future Scope
+## 14. Future Scope
 
 - 📱 **Mobile Native Client:** React Native companion application with biometric unlock (FaceID / Fingerprint).
 - 🔗 **Zero-Knowledge Key Derivation:** Client-side passphrase derivation using PBKDF2/Argon2 for end-to-end zero-knowledge encryption.
@@ -279,7 +319,8 @@ npm run build
 
 ---
 
-## 14. Author
+## 15. Author
 
 - **GitHub:** [@harshu167](https://github.com/harshu167)
 - **Project:** DataVault — Secure Personal Data Sharing and Privacy Management Platform
+

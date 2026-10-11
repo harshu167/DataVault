@@ -1,0 +1,9 @@
+frontend/
+target/
+uploads/
+.git/
+.settings/
+.classpath
+.project
+*.log
+scratch/
